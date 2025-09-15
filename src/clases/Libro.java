@@ -33,6 +33,12 @@ public class Libro {
 
     public List<Ejemplar> getEjemplares() { return ejemplares; }
     public void setEjemplares(List<Ejemplar> ejemplares) { this.ejemplares = ejemplares; }
+
+    @Override
+    public String toString() {
+        return "Id: "+ this.getId()+", Titulo: "+ this.getTitulo()+ ", Autor: " + this.getAutor()
+                + ", Año: " + this.getAnio() + " \n";
+    }
 }
 
 

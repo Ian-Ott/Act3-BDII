@@ -28,5 +28,10 @@ public class Socio {
 
     public List<Prestamo> getPrestamos() { return prestamos; }
     public void setPrestamos(List<Prestamo> prestamos) { this.prestamos = prestamos; }
+
+    @Override
+    public String toString() {
+        return "Id: "+ this.getId()+", Nombre: "+ this.getNombre()+ ", Mail: " + this.getMail() + " \n";
+    }
 }
 

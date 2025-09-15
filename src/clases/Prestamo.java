@@ -39,4 +39,10 @@ public class Prestamo {
 
     public Ejemplar getEjemplar() { return ejemplar; }
     public void setEjemplar(Ejemplar ejemplar) { this.ejemplar = ejemplar; }
+
+    @Override
+    public String toString() {
+        return "Id: "+ this.getId()+", Fecha del prestamo: "+ this.getFechaPrestamo()+ ", Fecha de devolucion: " + this.getFechaDevolucion()
+                + ", Id Socio: " + this.getSocio() + ", Id Ejemplar: " + this.getEjemplar() +  " \n";
+    }
 }
