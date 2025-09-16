@@ -6,9 +6,10 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "PRESTAMO")
 public class Prestamo {
-    @Id
+    @EmbeddedId
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;  // Usamos ID propio para simplificar
+    private PrestamoID Id;  // Usamos ID propio para simplificar
+
 
     @Column(name = "fecha_prestamo", nullable = false)
     private LocalDate fechaPrestamo;
@@ -16,17 +17,25 @@ public class Prestamo {
     @Column(name = "fecha_devolucion")
     private LocalDate fechaDevolucion;
 
+    @MapsId("idSocio")
     @ManyToOne
     @JoinColumn(name = "id_socio", nullable = false)
     private Socio socio;
-
+    @MapsId("idEjemplar")
     @ManyToOne
     @JoinColumn(name = "id_ejemplar", nullable = false)
     private Ejemplar ejemplar;
 
     // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+
+
+    public void setId(PrestamoID id) {
+        this.Id = id;
+    }
+
+    public PrestamoID getId() {
+        return Id;
+    }
 
     public LocalDate getFechaPrestamo() { return fechaPrestamo; }
     public void setFechaPrestamo(LocalDate fechaPrestamo) { this.fechaPrestamo = fechaPrestamo; }
@@ -42,7 +51,7 @@ public class Prestamo {
 
     @Override
     public String toString() {
-        return "Id: "+ this.getId()+", Fecha del prestamo: "+ this.getFechaPrestamo()+ ", Fecha de devolucion: " + this.getFechaDevolucion()
-                + ", Id Socio: " + this.getSocio() + ", Id Ejemplar: " + this.getEjemplar() +  " \n";
+        return "Fecha del Prestamo "+ this.getId().getFechaPrestamo() + ", Fecha de devolucion: " + this.getFechaDevolucion()
+                + ", Id Socio: " + this.getId().getSocio() + ", Id Ejemplar: " + this.getId().getEjemplar() +  " \n";
     }
 }

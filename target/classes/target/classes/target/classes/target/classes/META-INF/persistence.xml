@@ -12,6 +12,7 @@
         <class>modelo.Ejemplar</class>
         <class>modelo.Socio</class>
         <class>modelo.Prestamo</class>
+        <class>modelo.PrestamoID</class>
 
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>

@@ -4,6 +4,9 @@ package src;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import src.clases.Ejemplar;
+import src.clases.Libro;
+import src.clases.Prestamo;
 import src.clases.Socio;
 
 import java.util.*;
@@ -25,9 +28,8 @@ public class Main {
 
 
         // Crear un gestor de entidades
-        EntityManager em = emf.createEntityManager();
-        manager = new Manager(em);
-        em.getTransaction().begin();
+        manager = new Manager(em,emf);
+
         menuPrincipal();
 
     }
@@ -100,9 +102,15 @@ public class Main {
                 manager.altaSocio();
                 break;
             case '2':
-                manager.buscarSocio();
+                manager.eliminarSocio();
                 break;
             case '3':
+                manager.actualizarSocio();
+                break;
+            case '4':
+                manager.buscarSocio();
+                break;
+            case '5':
                 List<Socio> lista = manager.listarSocios();
                 System.out.println("Lista de Socios: \n");
                 for (Socio socio :lista) {
@@ -127,16 +135,22 @@ public class Main {
 
             switch (op) {
                 case '1':
-                    manager.altaSocio();
+                    manager.guardarLibro();
                     break;
                 case '2':
-                    manager.buscarSocio();
+                    manager.eliminarLibro();
                     break;
                 case '3':
-                    List<Socio> lista = manager.listarSocios();
-                    System.out.println("Lista de Socios: \n");
-                    for (Socio socio :lista) {
-                        System.out.println(socio);
+                    manager.actualizarLibro();
+                    break;
+                case '4':
+                    System.out.println(manager.obtenerLibroPorId());
+                    break;
+                case '5':
+                    List<Libro> lista = manager.obtenerTodosLosLibros();
+                    System.out.println("Lista de Libros: \n");
+                    for (Libro libro :lista) {
+                        System.out.println(libro);
                     }
                     break;
                 case '0':
@@ -158,16 +172,22 @@ public class Main {
 
             switch (op) {
                 case '1':
-                    manager.altaSocio();
+                    manager.altaPrestamo();
                     break;
                 case '2':
-                    manager.buscarSocio();
+                    manager.eliminarPrestamo();
                     break;
                 case '3':
-                    List<Socio> lista = manager.listarSocios();
-                    System.out.println("Lista de Socios: \n");
-                    for (Socio socio :lista) {
-                        System.out.println(socio);
+                    manager.actualizarPrestamo();
+                    break;
+                case '4':
+                    System.out.println(manager.obtenerPrestamo());
+                    break;
+                case '5':
+                    List<Prestamo> lista = manager.obtenerTodosLosPrestamos();
+                    System.out.println("Lista de Prestamos: \n");
+                    for (Prestamo prestamo :lista) {
+                        System.out.println(prestamo);
                     }
                     break;
                 case '0':
@@ -199,16 +219,22 @@ public class Main {
 
             switch (op) {
                 case '1':
-                    manager.altaSocio();
+                    manager.altaEjemplar();
                     break;
                 case '2':
-                    manager.buscarSocio();
+                    manager.eliminarEjemplar();
                     break;
                 case '3':
-                    List<Socio> lista = manager.listarSocios();
-                    System.out.println("Lista de Socios: \n");
-                    for (Socio socio :lista) {
-                        System.out.println(socio);
+                    manager.actualizarEjemplar();
+                    break;
+                case '4':
+                    manager.obtenerEjemplarPorId();
+                    break;
+                case '5':
+                    List<Ejemplar> lista = manager.obtenerTodosLosEjemplaresLibro();
+                    System.out.println("Lista de Ejemplares: \n");
+                    for (Ejemplar ejemplar :lista) {
+                        System.out.println(ejemplar);
                     }
                     break;
                 case '0':

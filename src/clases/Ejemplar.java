@@ -11,32 +11,49 @@ public class Ejemplar {
     private Long id;
 
 
-    private Boolean disponible;
-
     @ManyToOne
     @JoinColumn(name = "id_libro", nullable = false)
-    private Long libro;
+    private Libro libro;
+
+    private Boolean disponible;
 
     @OneToMany(mappedBy = "ejemplar", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Prestamo> prestamos;
 
     // Getters y Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
 
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
 
     public Boolean getDisponible() { return disponible; }
     public void setDisponible(Boolean disponible) { this.disponible = disponible; }
 
-    public long getLibro() { return libro; }
-    public void setLibro(long libro) { this.libro = libro; }
+
+    public void setLibro(Libro libro) {
+        this.libro = libro;
+    }
+
+    public Libro getLibro() {
+        return libro;
+    }
 
     public List<Prestamo> getPrestamos() { return prestamos; }
     public void setPrestamos(List<Prestamo> prestamos) { this.prestamos = prestamos; }
 
     @Override
     public String toString() {
-        return "Id: "+ this.getId()+", Codigo: "+ this.getCodigo()+ ", Disponible: " + this.getDisponible() + " \n";
+        String Ejemplar = "Id Ejemplar: "+ this.id+", Libro: "+ this.getLibro()+ ", Disponible: " + this.getDisponible()  + " \n";
+        Ejemplar = Ejemplar + "ID Prestamos:\n";
+        for (int i = 0; i < prestamos.size(); i++) {
+            Ejemplar = Ejemplar + this.getPrestamos().get(i) +"\n";
+        }
+        return Ejemplar;
     }
 }
 
