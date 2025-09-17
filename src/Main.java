@@ -56,7 +56,6 @@ public class Main {
                         opcionPrestamo();
                         break;
                     case '0':
-                        manager.salir();
                         bcontinuar = false;
                         break;
                     default:
@@ -66,9 +65,6 @@ public class Main {
 
             } while (bcontinuar);
             System.exit(0);
-
-
-
 
 
         } finally {
@@ -113,8 +109,12 @@ public class Main {
             case '5':
                 List<Socio> lista = manager.listarSocios();
                 System.out.println("Lista de Socios: \n");
-                for (Socio socio :lista) {
-                    System.out.println(socio);
+                if (!lista.isEmpty()) {
+                    for (Socio socio : lista) {
+                        System.out.println(socio);
+                    }
+                }else{
+                    System.out.println("No hay socios cargados.");
                 }
                 break;
             case '0':
@@ -149,8 +149,12 @@ public class Main {
                 case '5':
                     List<Libro> lista = manager.obtenerTodosLosLibros();
                     System.out.println("Lista de Libros: \n");
-                    for (Libro libro :lista) {
-                        System.out.println(libro);
+                    if (!lista.isEmpty()) {
+                        for (Libro libro : lista) {
+                            System.out.println(libro);
+                        }
+                    }else{
+                        System.out.println("No hay libros cargados.");
                     }
                     break;
                 case '0':
@@ -186,8 +190,12 @@ public class Main {
                 case '5':
                     List<Prestamo> lista = manager.obtenerTodosLosPrestamos();
                     System.out.println("Lista de Prestamos: \n");
-                    for (Prestamo prestamo :lista) {
-                        System.out.println(prestamo);
+                    if (!lista.isEmpty()) {
+                        for (Prestamo prestamo : lista) {
+                            System.out.println(prestamo);
+                        }
+                    }else{
+                        System.out.println("No hay prestamos cargados.");
                     }
                     break;
                 case '0':
@@ -225,16 +233,17 @@ public class Main {
                     manager.eliminarEjemplar();
                     break;
                 case '3':
-                    manager.actualizarEjemplar();
-                    break;
-                case '4':
                     manager.obtenerEjemplarPorId();
                     break;
-                case '5':
+                case '4':
                     List<Ejemplar> lista = manager.obtenerTodosLosEjemplaresLibro();
                     System.out.println("Lista de Ejemplares: \n");
-                    for (Ejemplar ejemplar :lista) {
-                        System.out.println(ejemplar);
+                    if (!lista.isEmpty()) {
+                        for (Ejemplar ejemplar : lista) {
+                            System.out.println(ejemplar);
+                        }
+                    }else{
+                        System.out.println("No hay ejemplares cargados.");
                     }
                     break;
                 case '0':
@@ -252,9 +261,8 @@ public class Main {
         System.out.println("Ingrese una opcion:\n");
         System.out.println("1 - Dar de alta Ejemplar");
         System.out.println("2 - Borrar Ejemplar");
-        System.out.println("3 - Modificar Ejemplar");
-        System.out.println("4 - Buscar Ejemplar");
-        System.out.println("5 - Listar Ejemplar");
+        System.out.println("3 - Buscar Ejemplar");
+        System.out.println("4 - Listar Ejemplar");
         System.out.println("0 - Salir");
     }
 

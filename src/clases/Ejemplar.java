@@ -12,7 +12,7 @@ public class Ejemplar {
 
 
     @ManyToOne
-    @JoinColumn(name = "id_libro", nullable = false)
+    @JoinColumn(name = "IDLIBRO", nullable = false)
     private Libro libro;
 
     private Boolean disponible;

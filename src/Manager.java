@@ -29,7 +29,7 @@ public class Manager {
         s.setMail(mail);
         String smsg = "persist()";
         try {
-            em.getTransaction().begin();
+
             em.persist(s);
             System.out.println("Main:em.persist(c) hecho");
             smsg = "commit()";
@@ -73,22 +73,47 @@ public class Manager {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Socio socio = new Socio();
-        System.out.println("Ingrese ID:");
-        socio.setId( Long.valueOf( entrada.nextLine()));
-        System.out.println("Ingrese Nombre:");
-        socio.setNombre(String.valueOf( entrada.nextLine()));
-        System.out.println("Ingrese Mail:");
-        socio.setMail(String.valueOf( entrada.nextLine()));
+        String input;
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID:");
+                id = Long.valueOf(entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID no valido!");
+            }
+        }while(error);
 
-        try {
-            em.merge(socio);
-            em.getTransaction().commit();
-        } catch (Exception e) {
+        socio = em.find(Socio.class,id);
+        if (socio == null){
+            System.out.println("El socio no existe!");
             em.getTransaction().rollback();
-            System.err.println("Error al actualizar el socio: " + e.getMessage());
-        } finally {
-            em.close();
+        }else {
+
+            System.out.println("Ingrese Nombre: ('.' para no actualizar)");
+            input = String.valueOf(entrada.nextLine());
+            if (!input.contains(".")) {
+                socio.setNombre(input);
+            }
+            System.out.println("Ingrese Mail: ('.' para no actualizar)");
+            input = String.valueOf(entrada.nextLine());
+            if (!input.contains(".")) {
+                socio.setMail(input);
+            }
+
+            try {
+                em.getTransaction().commit();
+                System.out.println("\nSocio modificado!");
+            } catch (Exception e) {
+                em.getTransaction().rollback();
+                System.err.println("Error al actualizar el socio: " + e.getMessage());
+            }
+
         }
+        em.close();
     }
 
 
@@ -99,9 +124,18 @@ public class Manager {
      */
     public void eliminarSocio() {
         EntityManager em = emf.createEntityManager();
-        Long id;
-        System.out.println("Ingrese ID:");
-        id = Long.valueOf( entrada.nextLine());
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID:");
+                id = Long.valueOf(entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID no valido!");
+            }
+        }while(error);
         em.getTransaction().begin();
         try {
             Socio socio = em.find(Socio.class, id);
@@ -109,12 +143,14 @@ public class Manager {
                 em.remove(socio);
                 em.getTransaction().commit();
             }
+            System.out.println("Socio eliminado con exito!");
         } catch (Exception e) {
             em.getTransaction().rollback();
             System.err.println("Error al eliminar el socio: " + e.getMessage());
         } finally {
             em.close();
         }
+
     }
 
 
@@ -128,12 +164,23 @@ public class Manager {
 
     void buscarSocio(){
         EntityManager em = emf.createEntityManager();
-        int id;
-        em.getTransaction().begin();
 
-        System.out.println("Ingrese id del socio a buscar:");
-        id = Integer.valueOf( entrada.nextLine() );
+        em.getTransaction().begin();
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID:");
+                id = Long.valueOf(entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID no valido!");
+            }
+        }while(error);
         Socio socio = em.find(Socio.class, id);
+        System.out.println("Socio:\n");
+        System.out.println(socio);
         em.close();
         //System.out.println(manager.buscarSocio(id));
     }
@@ -142,25 +189,37 @@ public class Manager {
         Libro libro = new Libro();
         em.getTransaction().begin();
         System.out.println("Ingrese Titulo:");
-        libro.setTitulo(String.valueOf( entrada.nextLine()));
+        libro.setTitulo(String.valueOf(entrada.nextLine()));
         System.out.println("Ingrese Autor:");
-        libro.setAutor(String.valueOf( entrada.nextLine()));
-        System.out.println("Ingrese Anio:");
-        libro.setAnio(Integer.valueOf( entrada.nextLine()));
+        libro.setAutor(String.valueOf(entrada.nextLine()));
+        int anio = 0;
+        boolean error;
+        do {
+            try {
+                System.out.println("Ingrese Anio:");
+                anio = Integer.valueOf(entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID no valido!");
+            }
+        } while (error);
+        libro.setAnio(anio);
         try {
             em.persist(libro);
-            //em.getTransaction().commit();
+            System.out.println("\nLibro guardado con exito!");
+            em.getTransaction().commit();
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.err.println("Error al guardar el libro: " + e.getMessage());
+            System.err.println("\nError al guardar el libro: " + e.getMessage());
         }
 
-        int cantidadE = 0;
+        /*int cantidadE = 0;
 
         System.out.println("Ingrese la cantidad de ejemplares disponibles:");
         cantidadE = Integer.parseInt( entrada.nextLine());
 
-        /*try {
+        try {
         for (int i = 0; i < cantidadE; i++) {
             Ejemplar ejemplar = new Ejemplar();
             ejemplar.setLibro(libro);
@@ -219,23 +278,57 @@ public class Manager {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Libro libro = new Libro();
-        System.out.println("Ingrese ID:");
-        libro.setId( Long.valueOf( entrada.nextLine()));
-        System.out.println("Ingrese Titulo:");
-        libro.setTitulo(String.valueOf( entrada.nextLine()));
-        System.out.println("Ingrese Autor:");
-        libro.setAutor(String.valueOf( entrada.nextLine()));
-        System.out.println("Ingrese Anio:");
-        libro.setAnio(Integer.valueOf( entrada.nextLine()));
-        try {
-            em.merge(libro);
-            em.getTransaction().commit();
-        } catch (Exception e) {
+        boolean error = false;
+        String input;
+        Long id = 0L;
+        do{
+            try {
+                System.out.println("Ingrese ID:");
+                id = Long.valueOf(entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID no valido!");
+            }
+        }while(error);
+        libro = em.find(Libro.class,id);
+        if (libro == null){
             em.getTransaction().rollback();
-            System.err.println("Error al actualizar el libro: " + e.getMessage());
-        } finally {
-            em.close();
+            System.out.println("\nEl libro no existe!");
+        }else {
+            System.out.println("Ingrese Titulo:( '.' para no actualizar)");
+            input = String.valueOf(entrada.nextLine());
+            if (!input.contains(".")) {
+                libro.setTitulo(input);
+            }
+            System.out.println("Ingrese Autor: ( '.' para no actualizar)");
+            input = String.valueOf(entrada.nextLine());
+            if (!input.contains(".")) {
+                libro.setAutor(input);
+            }
+
+            do{
+                System.out.println("Ingrese Anio: ( '.' para no actualizar)");
+                input = String.valueOf(entrada.nextLine());
+                if (!input.contains(".")) {
+                    try {
+                        libro.setAnio(Integer.valueOf(entrada.nextLine()));
+                        error = false;
+                    } catch (NumberFormatException e) {
+                        System.out.println("EL anio debe ser un entero!");
+                        error = true;
+                    }
+                }
+            }while(error);
+            try {
+                em.getTransaction().commit();
+                System.out.println("Libro actualizado!!");
+            } catch (Exception e) {
+                em.getTransaction().rollback();
+                System.err.println("Error al actualizar el libro: " + e.getMessage());
+            }
         }
+            em.close();
     }
 
 
@@ -246,19 +339,29 @@ public class Manager {
      */
     public void eliminarLibro() {
         EntityManager em = emf.createEntityManager();
-        Long id;
-        System.out.println("Ingrese ID:");
-        id = Long.valueOf( entrada.nextLine());
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID:");
+                id = Long.valueOf(entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID no valido!");
+            }
+        }while(error);
         em.getTransaction().begin();
         try {
             Libro libro = em.find(Libro.class, id);
             if (libro != null) {
                 em.remove(libro);
                 em.getTransaction().commit();
+                System.out.println("\nLibro eliminado!");
             }
         } catch (Exception e) {
             em.getTransaction().rollback();
-            System.err.println("Error al eliminar el libro: " + e.getMessage());
+            System.err.println("\nError al eliminar el libro: " + e.getMessage());
         } finally {
             em.close();
         }
@@ -266,24 +369,46 @@ public class Manager {
 
     public void altaEjemplar() {
         EntityManager em = emf.createEntityManager();
-        Ejemplar ejemplar = new Ejemplar();
         Libro libro = new Libro();
-        int cantidadE = 0;
         em.getTransaction().begin();
-        System.out.println("Ingrese Id de Libro:");
-        libro.setId(Long.parseLong( entrada.nextLine()));
-        ejemplar.setLibro(libro);
-        System.out.println("Ingrese la cantidad de ejemplares disponibles:");
-        cantidadE = Integer.parseInt( entrada.nextLine());
-        ejemplar.setDisponible(true);
-        for (int i = 0; i < cantidadE; i++) {
+        Long id = 0L;
+        boolean error;
+        do{
             try {
-                em.persist(ejemplar);
-                em.getTransaction().commit();
-            } catch (Exception e) {
-                em.getTransaction().rollback();
-                System.err.println("Error al guardar el ejemplar: " + e.getMessage());
+                System.out.println("Ingrese ID de libro:");
+                id = Long.valueOf(entrada.nextLine());
+                libro.setId(id);
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de libro no valido!");
             }
+        }while(error);
+        int cantidadE = 0;
+        do{
+            try {
+                System.out.println("Ingrese la cantidad de ejemplares disponibles:");
+                cantidadE = Integer.parseInt( entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("Ingreso no valido!");
+            }
+        }while(error);
+
+        try {
+            for (int i = 0; i < cantidadE; i++) {
+                Ejemplar ejemplar = new Ejemplar();
+                ejemplar.setLibro(libro);
+                ejemplar.setDisponible(true);
+                em.persist(ejemplar);
+            }
+            em.getTransaction().commit();
+            System.out.println("Ejemplar/es cargados.");
+        } catch (Exception e) {
+            System.out.println(e);
+            em.getTransaction().rollback();
+            System.err.println("Error al guardar el ejemplar: " + e.getMessage());
         }
         em.close();
     }
@@ -297,11 +422,21 @@ public class Manager {
      */
     public Ejemplar obtenerEjemplarPorId() {
         EntityManager em = emf.createEntityManager();
-        Long id;
         em.getTransaction().begin();
-        System.out.println("Ingrese ID de Ejemplar:");
-        id = Long.parseLong( entrada.nextLine());
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID de ejemplar:");
+                id = Long.valueOf(entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de ejemplar no valido!");
+            }
+        }while(error);
         Ejemplar ejemplar = em.find(Ejemplar.class,id);
+        System.out.println(ejemplar);
         em.close();
         return ejemplar;
     }
@@ -326,25 +461,32 @@ public class Manager {
      *
      *
      */
-    public void actualizarEjemplar() {
+    /*public void actualizarEjemplar() {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         Ejemplar ejemplar= new Ejemplar();
+        Long id;
         System.out.println("Ingrese ID de Ejemplar:");
-        ejemplar.setId(Long.parseLong(entrada.nextLine()));
-        System.out.println("Ingrese Estado del ejemplar (true | false):");
-        ejemplar.setDisponible(Boolean.valueOf(entrada.nextLine()));
-
-        try {
-            em.merge(ejemplar);
-            em.getTransaction().commit();
-        } catch (Exception e) {
+        id = Long.parseLong(entrada.nextLine());
+        ejemplar = em.find(Ejemplar.class, id);
+        if (ejemplar == null){
             em.getTransaction().rollback();
-            System.err.println("Error al actualizar el ejemplar: " + e.getMessage());
-        } finally {
-            em.close();
+            System.out.println("\nEl Ejemplar no existe!");
+        }else {
+
+            System.out.println("Ingrese Estado del ejemplar (true | false):");
+            ejemplar.setDisponible(Boolean.valueOf(entrada.nextLine()));
+
+            try {
+                em.getTransaction().commit();
+                System.out.println("\nEjemplar modificado!");
+            } catch (Exception e) {
+                em.getTransaction().rollback();
+                System.err.println("Error al actualizar el ejemplar: " + e.getMessage());
+            }
         }
-    }
+        em.close();
+    }*/
 
 
     /**
@@ -354,15 +496,25 @@ public class Manager {
      */
     public void eliminarEjemplar() {
         EntityManager em = emf.createEntityManager();
-        Long id;
-        System.out.println("Ingrese ID de Ejemplar:");
-        id = Long.parseLong(entrada.nextLine());
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID de ejemplar:");
+                id = Long.valueOf(entrada.nextLine());
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de ejemplar no valido!");
+            }
+        }while(error);
         em.getTransaction().begin();
         try {
             Ejemplar ejemplar = em.find(Ejemplar.class, id);
             if (ejemplar != null) {
                 em.remove(ejemplar);
                 em.getTransaction().commit();
+                System.out.println("\nEjemplar eliminado!!");
             }
         } catch (Exception e) {
             em.getTransaction().rollback();
@@ -376,15 +528,57 @@ public class Manager {
         EntityManager em = emf.createEntityManager();
         Prestamo prestamo = new Prestamo();
         PrestamoID ID = new PrestamoID();
+        Socio socio = new Socio();
+        Ejemplar ejemplar = new Ejemplar();
         em.getTransaction().begin();
         ID.setFechaPrestamo(LocalDate.now());
-        System.out.println("Ingrese Id de Socio:");
-        ID.setSocio(Long.parseLong( entrada.nextLine()));
-        System.out.println("Ingrese el ID de ejemplar:");
-        ID.setEjemplar(Long.parseLong(entrada.nextLine()));
+        //prestamo.setFechaPrestamo(LocalDate.now());
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID de socio:");
+                id = Long.valueOf(entrada.nextLine());
+                socio = em.find(Socio.class,id);
+                if (socio == null){
+                    em.getTransaction().rollback();
+                    System.out.println("El socio no existe!");
+                    error = true;
+                }else {
+                    prestamo.setSocio(socio);
+                    //ID.setSocio(id);
+                    error = false;
+                }
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de socio no valido!");
+            }
+        }while(error);
+        id = 0L;
+        do{
+            try {
+                System.out.println("Ingrese el ID de ejemplar:");
+                id = Long.valueOf(entrada.nextLine());
+                ejemplar = em.find(Ejemplar.class,id);
+                if (ejemplar == null){
+                    em.getTransaction().rollback();
+                    System.out.println("NO se encontro el ejemplar!");
+                    error = true;
+                }else {
+                    prestamo.setEjemplar(ejemplar);
+                    //ID.setEjemplar(id);
+                    error = false;
+                }
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de ejemplar no valido!");
+            }
+        }while(error);
+            prestamo.setId(ID);
             try {
                 em.persist(prestamo);
                 em.getTransaction().commit();
+                System.out.println("\nPrestamo cargado!!");
             } catch (Exception e) {
                 em.getTransaction().rollback();
                 System.err.println("Error al guardar el ejemplar: " + e.getMessage());
@@ -403,13 +597,43 @@ public class Manager {
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
         PrestamoID ID = new PrestamoID();
-        System.out.println("Ingrese ID de socio");
-        ID.setSocio(Long.parseLong( entrada.nextLine()));
-        System.out.println("Ingrese ID de Ejemplar:");
-        ID.setEjemplar(Long.parseLong(entrada.nextLine()));
-
-        System.out.println("Ingrese Fecha de prestamo (AAAA-MM-DD): ");
-        ID.setFechaPrestamo(LocalDate.parse(entrada.nextLine()));
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID de socio:");
+                id = Long.valueOf(entrada.nextLine());
+                ID.setSocio(id);
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de socio no valido!");
+            }
+        }while(error);
+        id = 0L;
+        do{
+            try {
+                System.out.println("Ingrese el ID de ejemplar:");
+                id = Long.valueOf(entrada.nextLine());
+                ID.setEjemplar(id);
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de ejemplar no valido!");
+            }
+        }while(error);
+        LocalDate fecha;
+        do{
+            try {
+                System.out.println("Ingrese Fecha de prestamo (AAAA-MM-DD): ");
+                fecha = LocalDate.parse(entrada.nextLine());
+                ID.setFechaPrestamo(fecha);
+                error = false;
+            } catch (Exception e) {
+                error = true;
+                System.out.println("Fecha no valida!");
+            }
+        }while(error);
         Prestamo prestamo = em.find(Prestamo.class, ID);
         em.close();
         return prestamo;
@@ -440,25 +664,70 @@ public class Manager {
         em.getTransaction().begin();
         PrestamoID ID = new PrestamoID();
         Prestamo prestamo = new Prestamo();
-        System.out.println("Ingrese ID de socio");
-        ID.setSocio(Long.parseLong( entrada.nextLine()));
-        System.out.println("Ingrese ID de Ejemplar:");
-        ID.setEjemplar(Long.parseLong(entrada.nextLine()));
-
-        System.out.println("Ingrese Fecha de prestamo (AAAA-MM-DD): ");
-        ID.setFechaPrestamo(LocalDate.parse(entrada.nextLine()));
-        System.out.println("Ingrese Fecha de devolucion (AAAA-MM-DD): ");
-        prestamo.setFechaDevolucion(LocalDate.parse(entrada.nextLine()));
-        prestamo.setId(ID);
-        try {
-            em.merge(prestamo);
-            em.getTransaction().commit();
-        } catch (Exception e) {
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID de socio:");
+                id = Long.valueOf(entrada.nextLine());
+                ID.setSocio(id);
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de socio no valido!");
+            }
+        }while(error);
+        id = 0L;
+        do{
+            try {
+                System.out.println("Ingrese el ID de ejemplar:");
+                id = Long.valueOf(entrada.nextLine());
+                ID.setEjemplar(id);
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de ejemplar no valido!");
+            }
+        }while(error);
+        LocalDate fecha;
+        do{
+            try {
+                System.out.println("Ingrese Fecha de prestamo (AAAA-MM-DD): ");
+                fecha = LocalDate.parse(entrada.nextLine());
+                ID.setFechaPrestamo(fecha);
+                error = false;
+            } catch (Exception e) {
+                error = true;
+                System.out.println("Fecha no valida!");
+            }
+        }while(error);
+        prestamo = em.find(Prestamo.class,ID);
+        if(prestamo == null){
             em.getTransaction().rollback();
-            System.err.println("Error al actualizar el prestamo: " + e.getMessage());
-        } finally {
-            em.close();
+            System.out.println("\nEl prestamo no existe!");
+        }else {
+            do{
+                try {
+                    System.out.println("Ingrese Fecha de devolucion (AAAA-MM-DD): ");
+                    fecha = LocalDate.parse(entrada.nextLine());
+                    prestamo.setFechaDevolucion(fecha);
+                    error = false;
+                } catch (Exception e) {
+                    error = true;
+                    System.out.println("Fecha no valida!");
+                }
+            }while(error);
+
+            prestamo.setId(ID);
+            try {
+                em.getTransaction().commit();
+                System.out.println("\nPrestamo modificado!");
+            } catch (Exception e) {
+                em.getTransaction().rollback();
+                System.err.println("\nError al actualizar el prestamo: " + e.getMessage());
+            }
         }
+        em.close();
     }
 
 
@@ -470,13 +739,43 @@ public class Manager {
     public void eliminarPrestamo() {
         EntityManager em = emf.createEntityManager();
         PrestamoID ID = new PrestamoID();
-        System.out.println("Ingrese ID de socio");
-        ID.setSocio(Long.parseLong( entrada.nextLine()));
-        System.out.println("Ingrese ID de Ejemplar:");
-        ID.setEjemplar(Long.parseLong(entrada.nextLine()));
-
-        System.out.println("Ingrese Fecha de prestamo (AAAA-MM-DD): ");
-        ID.setFechaPrestamo(LocalDate.parse(entrada.nextLine()));
+        Long id = 0L;
+        boolean error;
+        do{
+            try {
+                System.out.println("Ingrese ID de socio:");
+                id = Long.valueOf(entrada.nextLine());
+                ID.setSocio(id);
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de socio no valido!");
+            }
+        }while(error);
+        id = 0L;
+        do{
+            try {
+                System.out.println("Ingrese el ID de ejemplar:");
+                id = Long.valueOf(entrada.nextLine());
+                ID.setEjemplar(id);
+                error = false;
+            } catch (NumberFormatException e) {
+                error = true;
+                System.out.println("ID de ejemplar no valido!");
+            }
+        }while(error);
+        LocalDate fecha;
+        do{
+            try {
+                System.out.println("Ingrese Fecha de prestamo (AAAA-MM-DD): ");
+                fecha = LocalDate.parse(entrada.nextLine());
+                ID.setFechaPrestamo(fecha);
+                error = false;
+            } catch (Exception e) {
+                error = true;
+                System.out.println("Fecha no valida!");
+            }
+        }while(error);
 
         em.getTransaction().begin();
         try {
@@ -484,6 +783,7 @@ public class Manager {
             if (prestamo != null) {
                 em.remove(prestamo);
                 em.getTransaction().commit();
+                System.out.println("\nPrestamo eliminado!");
             }
         } catch (Exception e) {
             em.getTransaction().rollback();
@@ -492,12 +792,7 @@ public class Manager {
             em.close();
         }
     }
-    private  void limpiar(){
-        Scanner entrada = new Scanner(System.in);
-        System.out.println("Presione una tecla para continuar...");
-        entrada.nextLine();
-    }
 
-    public void salir() {
-    }
+
+
 }

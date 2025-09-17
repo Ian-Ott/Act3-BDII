@@ -11,19 +11,19 @@ public class Prestamo {
     private PrestamoID Id;  // Usamos ID propio para simplificar
 
 
-    @Column(name = "fecha_prestamo", nullable = false)
-    private LocalDate fechaPrestamo;
+//    @Column(name = "FECHAPRESTAMO", nullable = false)
+//    private LocalDate fechaPrestamo;
 
-    @Column(name = "fecha_devolucion")
+    @Column(name = "FECHADEVOLUCION")
     private LocalDate fechaDevolucion;
 
     @MapsId("idSocio")
     @ManyToOne
-    @JoinColumn(name = "id_socio", nullable = false)
+    @JoinColumn(name = "IDSOCIO", nullable = false)
     private Socio socio;
     @MapsId("idEjemplar")
     @ManyToOne
-    @JoinColumn(name = "id_ejemplar", nullable = false)
+    @JoinColumn(name = "IDEJEMPLAR", nullable = false)
     private Ejemplar ejemplar;
 
     // Getters y Setters
@@ -37,8 +37,8 @@ public class Prestamo {
         return Id;
     }
 
-    public LocalDate getFechaPrestamo() { return fechaPrestamo; }
-    public void setFechaPrestamo(LocalDate fechaPrestamo) { this.fechaPrestamo = fechaPrestamo; }
+//    public LocalDate getFechaPrestamo() { return fechaPrestamo; }
+//    public void setFechaPrestamo(LocalDate fechaPrestamo) { this.fechaPrestamo = fechaPrestamo; }
 
     public LocalDate getFechaDevolucion() { return fechaDevolucion; }
     public void setFechaDevolucion(LocalDate fechaDevolucion) { this.fechaDevolucion = fechaDevolucion; }
