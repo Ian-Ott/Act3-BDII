@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="toplink-essentials">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/src/librerias/toplink-essentials.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
